@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang = "ru">
+  <head>
+    <meta charset = "utf-8">
+    <title>Найти площадь фигуры</title>
+	<style>
+    .error input{
+      border: 1px solid red;
+    }
+
+    .error i{
+      color: red;
+    }
+    </style>
+	<script>
+	  function DoCalc(form){
+	    var stuff = form.elements;
+		var res = Number(stuff.res0.value), pow = res, fac = 1;
+		for (var i = 0; i < Number(stuff.res1.value); i++){
+		  pow *= Number(stuff.res0.value) * Number(stuff.res0.value);
+		  fac *= (i + 1) * 2 * ((i + 1) * 2 + 1);
+		  if (i % 2){res += pow / fac;}
+		  else{res -= pow / fac;}
+		}
+		console.log(res);
+		return 0;
+	  }
+	  
+	  function Check(){
+	    var res = true;
+		var stuff = document.querySelectorAll("[id^='text']");
+		for (var i = 0; i < stuff.length; i++) {
+		  stuff[i].getElementsByTagName("i")[0].innerHTML = '';
+		  stuff[i].classList.remove("error");
+        }
+		if (!document.getElementById("in0").value || isNaN(document.getElementById("in0").value)){
+		  document.getElementById("text0").classList.add("error");
+		  document.getElementById("err0").innerHTML = ' Введите число';
+		  res = false;
+		}
+		if (!document.getElementById("in1").value || isNaN(document.getElementById("in1").value)){
+		  document.getElementById("text1").classList.add("error");
+		  document.getElementById("err1").innerHTML = ' Введите натуральное число';
+		  res = false;
+		}
+		return res;
+	  }
+	</script>
+  </head>
+  <body>
+    <form onsubmit="return false">
+      <p><b>Введите x и точность</b></p>
+	  <div id="allt">
+	    <p id="text0">
+		  Х в радианах:
+		  <input id="in0" type="text" name="res0">
+		  <i id="err0"></i>
+	    </p>
+	    <p id="text1">
+	  	  Степень точности:
+		  <input id="in1" type="text" name="res1" value="100">
+		  <i id="err1"></i>
+	    </p>
+	  </div>
+	  <input type="button" onclick="if (Check()){DoCalc(this.form);}" value="Сосчитать">
+    </form>
+  </body>
+</html>

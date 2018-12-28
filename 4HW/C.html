@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang = "ru">
+  <head>
+    <meta charset = "utf-8">
+    <title>Найти площадь фигуры</title>
+	<style>
+	.error{
+	  background-color: #e87d86;
+	}
+    </style>
+	<script>
+	  function DoCalc(){
+	    var stuff = document.querySelectorAll("#tmatrix input");
+		var M1 = [], M2 = [];
+		for (var i = 0; i < stuff.length; i++){
+		  if(stuff[i].value < 0){M1[M1.length] = stuff[i].value;}
+		  else{M2[M2.length] = stuff[i].value;}
+		}
+		console.log(M1);
+		console.log(M2);
+		return 0;
+	  }
+	  
+	  function Check(){
+	    var res = true;
+	    var stuff = document.querySelectorAll("#tmatrix input");
+		for (var i = 0; i < stuff.length; i++) {
+		  stuff[i].classList.remove("error");
+        }
+		document.getElementById("errmess").innerHTML = '';
+		for (var i = 0; i < stuff.length; i++) {
+		  if (!stuff[i].value || isNaN(stuff[i].value)){
+		    stuff[i].classList.add("error");
+			res = false;
+			document.getElementById("errmess").innerHTML = ' Введите числа';
+		  };
+        }
+		return res;
+	  }
+	</script>
+  </head>
+  <body>
+    <form onsubmit="return false">
+      <p><b>Введите значения матрицы</b></p>
+	  <table id="tmatrix" border="1">
+	    <tr>
+		  <td><input type="text" name="t00" value="1"></td>
+		  <td><input type="text" name="t01" value="1"></td>
+		  <td><input type="text" name="t02" value="1"></td>
+		  <td><input type="text" name="t03" value="1"></td>
+		  <td><input type="text" name="t04" value="1"></td>
+		  <td><input type="text" name="t05" value="1"></td>
+		  <td><input type="text" name="t06" value="1"></td>
+		  <td><input type="text" name="t07" value="1"></td>
+		</tr>
+	    <tr>
+		  <td><input type="text" name="t10" value="1"></td>
+		  <td><input type="text" name="t11" value="1"></td>
+		  <td><input type="text" name="t12" value="1"></td>
+		  <td><input type="text" name="t13" value="1"></td>
+		  <td><input type="text" name="t14" value="1"></td>
+		  <td><input type="text" name="t15" value="1"></td>
+		  <td><input type="text" name="t16" value="1"></td>
+		  <td><input type="text" name="t17" value="1"></td>
+		</tr>
+	    <tr>
+		  <td><input type="text" name="t20" value="1"></td>
+		  <td><input type="text" name="t21" value="1"></td>
+		  <td><input type="text" name="t22" value="1"></td>
+		  <td><input type="text" name="t23" value="1"></td>
+		  <td><input type="text" name="t24" value="1"></td>
+		  <td><input type="text" name="t25" value="1"></td>
+		  <td><input type="text" name="t26" value="1"></td>
+		  <td><input type="text" name="t27" value="1"></td>
+		</tr>
+	    <tr>
+		  <td><input type="text" name="t30" value="1"></td>
+		  <td><input type="text" name="t31" value="1"></td>
+		  <td><input type="text" name="t32" value="1"></td>
+		  <td><input type="text" name="t33" value="1"></td>
+		  <td><input type="text" name="t34" value="1"></td>
+		  <td><input type="text" name="t35" value="1"></td>
+		  <td><input type="text" name="t36" value="1"></td>
+		  <td><input type="text" name="t37" value="1"></td>
+		</tr>
+	    <tr>
+		  <td><input type="text" name="t40" value="1"></td>
+		  <td><input type="text" name="t41" value="1"></td>
+		  <td><input type="text" name="t42" value="1"></td>
+		  <td><input type="text" name="t43" value="1"></td>
+		  <td><input type="text" name="t44" value="1"></td>
+		  <td><input type="text" name="t45" value="1"></td>
+		  <td><input type="text" name="t46" value="1"></td>
+		  <td><input type="text" name="t47" value="1"></td>
+		</tr>
+	    <tr>
+		  <td><input type="text" name="t50" value="1"></td>
+		  <td><input type="text" name="t51" value="1"></td>
+		  <td><input type="text" name="t52" value="1"></td>
+		  <td><input type="text" name="t53" value="1"></td>
+		  <td><input type="text" name="t54" value="1"></td>
+		  <td><input type="text" name="t55" value="1"></td>
+		  <td><input type="text" name="t56" value="1"></td>
+		  <td><input type="text" name="t57" value="1"></td>
+		</tr>
+	  </table>
+	  <input type="button" onclick="if (Check()){DoCalc();}" value="Составить массивы">
+	  <i id="errmess" style="color: Tomato;"></i>
+    </form>
+  </body>
+</html>

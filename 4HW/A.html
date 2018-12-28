@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang = "ru">
+  <head>
+    <meta charset = "utf-8">
+    <title>Найти площадь фигуры</title>
+	<style>
+    .error input{
+      border: 1px solid red;
+    }
+
+    .error i{
+      color: red;
+    }
+    </style>
+	<script>
+	  function ToggleText(per){
+	    var stuff = document.querySelectorAll("[id^='text']");
+		for (var i = 0; i < stuff.length; i++) {
+		  stuff[i].style.display = 'none';
+		  stuff[i].getElementsByTagName("input")[0].value = '';
+		  stuff[i].getElementsByTagName("input")[0].disabled = true;
+		  stuff[i].getElementsByTagName("i")[0].innerHTML = '';
+		  stuff[i].classList.remove("error");
+        }
+	    for (var i = 0; i < per.length; i++) {
+		  if (per[i] == 1){
+		    stuff = document.getElementById("text" + i);
+		    stuff.style.display = "block";
+			stuff.getElementsByTagName("input")[0].disabled = false;
+		  }
+        }
+	  }
+	  
+	  function DoCalc(form){
+	    var stuff = form.elements;
+	    switch(stuff.answer.value){
+		  case 'a1': console.log(Number(stuff.res0.value) * Number(stuff.res0.value)); break;
+		  case 'a2': console.log(Number(stuff.res2.value) * Number(stuff.res2.value) * Math.PI); break;
+		  case 'a3': console.log(Number(stuff.res2.value) * Number(stuff.res3.value) * Math.PI); break;
+		  case 'a4': console.log(Number(stuff.res0.value) * Number(stuff.res1.value)); break;
+		  case 'a5': console.log(Number(stuff.res0.value) * Number(stuff.res4.value)); break;
+		  case 'a6': console.log(Number(stuff.res0.value) * Number(stuff.res4.value) * 0.5); break;
+		}
+		return 0;
+	  }
+	  
+	  function Check(){
+	    var res = true;
+	    var stuff = document.querySelectorAll("[id^='text']");
+		for (var i = 0; i < stuff.length; i++) {
+		  if (stuff[i].style.display == 'block' && (!stuff[i].getElementsByTagName("input")[0].value || isNaN(stuff[i].getElementsByTagName("input")[0].value))){
+		    stuff[i].classList.add("error");
+		    stuff[i].getElementsByTagName("i")[0].innerHTML = ' Введите число';
+			res = false;
+		  }
+        }
+		return res;
+	  }
+	</script>
+  </head>
+  <body>
+    <form onsubmit="return false">
+      <p><b>Введите параметры фигуры</b></p>
+      <p><input type="radio" name="answer" value="a1" onclick="ToggleText('10000')">Квадрат<Br>
+      <input type="radio" name="answer" value="a2" onclick="ToggleText('00100')">Круг<Br>
+      <input type="radio" name="answer" value="a3" onclick="ToggleText('00110')">Эллипс<Br>
+      <input type="radio" name="answer" value="a4" onclick="ToggleText('11000')">Параллелограмм<Br>
+      <input type="radio" name="answer" value="a5" onclick="ToggleText('10001')">Трапеция<Br>
+      <input type="radio" name="answer" value="a6" onclick="ToggleText('10001')">Треугольник</p>
+	  <div id="allt">
+	    <p id="text0" style="display: none">
+		  Сторона:
+		  <input id="in0" type="text" name="res0">
+		  <i></i>
+	    </p>
+	    <p id="text1" style="display: none">
+	  	  Вторая сторона:
+		  <input id="in1" type="text" name="res1">
+		  <i></i>
+	    </p>
+	    <p id="text2" style="display: none">
+		  Радиус:
+		  <input id="in2" type="text" name="res2">
+		  <i></i>
+	    </p>
+	    <p id="text3" style="display: none">
+		  Второй радиус:
+		  <input id="in3" type="text" name="res3">
+		  <i></i>
+	    </p>
+	    <p id="text4" style="display: none">
+		  Высота перпендикулярно стороне:
+		  <input id="in4" type="text" name="res4">
+		  <i></i>
+	    </p>
+	  </div>
+	  <input type="button" onclick="if (Check()){DoCalc(this.form);}" value="Сосчитать">
+    </form>
+  </body>
+</html>
