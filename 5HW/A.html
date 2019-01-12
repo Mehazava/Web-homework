@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>  <meta charset="utf-8"></head>
+<body>
+  <script>
+  var m = [
+  {
+    text: 'Животные',
+    childs: [
+      {
+        text: 'Млекопитающие',
+        childs: [
+		  {
+		    text: 'Коровы'
+		  },
+		  {
+		    text: 'Ослы'
+		  },
+		  {
+		    text: 'Собаки'
+		  },
+		  {
+		    text: 'Тигры'
+		  }
+		]
+	  },
+      {
+        text: 'Другие',
+        childs: [
+		  {
+		    text: 'Змеи'
+		  },
+		  {
+		    text: 'Птицы'
+		  },
+		  {
+		    text: 'Ящерицы'
+		  }
+		]
+	  }
+    ]
+  },
+  {
+    text: 'Рыбы',
+    childs: [
+      {
+        text: 'Аквариумные',
+        childs: [
+		  {
+		    text: 'Гуппи'
+		  },
+		  {
+		    text: 'Скалярии'
+		  }
+		]
+	  },
+      {
+        text: 'Морские',
+        childs: [
+		  {
+		    text: 'Морская форель'
+		  }
+		]
+	  }
+    ]
+  }
+  ];
+  
+  function GetInfo(elem){
+    console.log(elem);
+	for (var i = 0; i < elem.childNodes.length; i++) {
+      GetInfo(elem.childNodes[i]);
+    }
+  }
+  
+  function ConstructList(UL, ElArr){
+    for (let i = 0; i < ElArr.length; i++){
+	  let LI = UL.appendChild(document.createElement('li'));
+	  LI.innerHTML = ElArr[i].text;
+	  if ('childs' in ElArr[i]){
+	    ConstructList(LI.appendChild(document.createElement('ul')), ElArr[i].childs)
+	  }
+	}
+  }
+  
+  function DoMagic(){
+    while (Page.firstChild){
+	  Page.removeChild(Page.firstChild);
+	}
+	let UL = Page.appendChild(document.createElement('ul'));
+	ConstructList(UL, m);
+	let Bttn = UL.appendChild(document.createElement('input'));
+	Bttn.type = 'button';
+	Bttn.onclick = function(){GetInfo(document.getElementsByTagName("html")[0]); return false;};
+	Bttn.value = 'Вывести информацию';
+  }
+  </script>
+  <div id="Page">
+    <input type="button" onclick="DoMagic()" value="Заполнить страницу">
+  </div>
+</body>
+</html>

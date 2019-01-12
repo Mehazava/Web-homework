@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="jquery.js"></script>
+	
+	<script type="text/javascript">
+      var m = [
+      {
+        text: 'Животные',
+        childs: [
+          {
+            text: 'Млекопитающие',
+            childs: [
+		      {
+		        text: 'Коровы'
+		      },
+		      {
+		        text: 'Ослы'
+		      },
+		      {
+		        text: 'Собаки'
+		      },
+		      {
+		        text: 'Тигры'
+		      }
+		    ]
+	      },
+          {
+            text: 'Другие',
+            childs: [
+		      {
+		        text: 'Змеи'
+		      },
+		      {
+		        text: 'Птицы'
+		      },
+		      {
+		        text: 'Ящерицы'
+		      }
+		    ]
+	      }
+        ]
+      },
+      {
+        text: 'Рыбы',
+        childs: [
+          {
+            text: 'Аквариумные',
+            childs: [
+		      {
+		        text: 'Гуппи'
+		      },
+		      {
+		        text: 'Скалярии'
+		      }
+		    ]
+	      },
+          {
+            text: 'Морские',
+            childs: [
+		      {
+		        text: 'Морская форель'
+		      }
+		    ]
+	      }
+        ]
+      }
+      ];
+	  
+	  function ConstructList(UL, ElArr){
+        for (let i = 0; i < ElArr.length; i++){
+	      let LI = $("<li><span>" + ElArr[i].text + "</span></li>").appendTo(UL);
+	      if ('childs' in ElArr[i]){
+	        ConstructList($("<ul></ul>").appendTo(LI), ElArr[i].childs)
+	      }
+	    }
+      }
+	  
+	  $(document).ready(function(){
+	    ConstructList($('<ul></ul>').appendTo($('body')), m);
+		$('li').each(function(i){
+          console.log(jQuery(this).children('span').text() + ": contains " + $("li", this).length + ' li');
+        });
+	    $('span').click(function(){
+          $(this).nextAll().fadeToggle( "slow", "linear" );
+        });
+	  });
+	</script>
+  </head>
+  <body>
+    
+  </body>
+</html>

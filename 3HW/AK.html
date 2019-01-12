@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Example page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  </head>
+	<body>
+	  <div class="container-fluid">
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" href="#"><span class="glyphicon glyphicon-adjust"></span> Night mode  </a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#"><span class="glyphicon glyphicon-question-sign"></span> Help  </a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-folder-open"></span> Open stuff  
+						</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">Link 1</a>
+							<a class="dropdown-item" href="#">Link 2</a>
+							<a class="dropdown-item" href="#">Link 3</a>
+						</div>
+					</li>
+				</ul>
+			</nav>
+			<ol class="breadcrumb">
+        <li><a href="#"> Главная </a></li>
+        <span class="glyphicon glyphicon-circle-arrow-right"></span>
+				<li><a href="#"> Раздел </a></li>
+				<span class="glyphicon glyphicon-circle-arrow-right"></span>
+				<li class="active"> Текущая статья </li>
+			</ol>
+			
+      <div class="row">
+        <div class="col-sm-3">
+				  <span class="text-success"><span class="glyphicon glyphicon-floppy-saved"></span> Saved</span>
+					<table class="table table-bordered table-responsive-xl">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>John</td>
+								<td>John</td>
+							</tr>
+							<tr>
+								<td>Mary</td>
+								<td>John</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-9">
+				  <span class="text-danger"><span class="glyphicon glyphicon-floppy-remove"></span> Not saved</span>
+					<table class="table table-bordered table-dark table-hover">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Error</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>John</td>
+								<td>John</td>
+								<td>John</td>
+							</tr>
+							<tr>
+								<td>Mary</td>
+								<td>John</td>
+								<td>John</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+    </div>
+	</body>
+</html>

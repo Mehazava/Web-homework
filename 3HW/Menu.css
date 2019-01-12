@@ -1,0 +1,33 @@
+#SubMen.MySubmenu {
+	display: grid;
+	grid-template-columns: 100px;
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+#SubMen.MySubmenu:hover {
+	grid-template-columns: 100px auto auto auto;
+}
+
+#SubMen.MySubmenu li {
+	display: none;
+}
+
+#SubMen.MySubmenu:hover li {
+	display: block;
+	padding-right: 6px;
+	padding-left: 6px;
+	align-self: end;
+}
+
+#SubMen.MySubmenu:hover li > a {
+	font-size: 12px;
+}
+
+
+#SubMen.MySubmenu > a {
+	font-size: 15px;
+	justify-self: center;
+}
+

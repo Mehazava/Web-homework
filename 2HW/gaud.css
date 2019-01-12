@@ -1,0 +1,184 @@
+.verse {
+	text-align: center;
+}
+
+.verse h1 {
+	font-size: 30px;
+}
+
+.verse #author {
+	font-style: italic;
+	margin: auto;
+	text-align: right;
+	max-width: 777px;
+}
+
+.verse p {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.verse p:nth-of-type(4n) {
+	margin-bottom: 16px;
+}
+
+.PersonInfo img{
+	border-radius: 8px;
+	height: auto;
+	max-width: 120px;
+	margin-right: 20px;
+	border: 2px solid black;
+	float: left;
+	vertical-align:top;
+}
+
+.PersonInfo h1 {
+	text-align: center;
+	text-decoration: underline brown;
+}
+
+.everything #frames {
+	position: absolute;
+	width: 99%;
+	height: 680px;
+	display: grid;
+	grid-template-columns: 30% auto 30%;
+	grid-template-rows: 24px 640px 24px;
+}
+
+.everything #frames > div {
+	border: 2px solid black;
+	background-color: gray;
+	float: left;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.everything #frames > div:first-child {
+	z-index: 42;
+	grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.everything #frames > div:nth-child(2) {
+	display: grid;
+}
+
+.everything #frames > div:nth-child(4) {
+	display: grid;
+	grid-template-rows: 1fr 1fr 1fr;
+}
+
+.everything #frames > div:nth-child(4) > a:nth-child(1) {
+	align-self: end;
+	display: block;
+}
+
+.everything #frames > div:nth-child(4) > a:nth-child(2) {
+	align-self: center;
+	display: block;
+}
+
+.everything #frames > div:nth-child(4) > a:nth-child(3) {
+	align-self: start;
+	display: block;
+}
+
+.everything #frames > div:nth-child(4) > a > img {
+	max-width: 90%;
+	height: auto;
+}
+
+.everything #frames > div:last-child {
+	grid-column-start: 1;
+  grid-column-end: 4;
+	text-align: right;
+}
+
+.everything #leftimg {
+	justify-self: center;
+	align-self: center;
+	display: block;
+	border: 2px solid black;
+	height: auto;
+	max-width: 100%;
+}
+
+.everything [name="IF"] {
+	height: 640px;
+	width: 100%;
+}
+
+.everything #copyright {
+	font-style: italic;
+	text-align: right;
+	padding-right: 4px;
+}
+
+
+#MenuC.ExtMen {
+	background-color: orange;
+	display: block;
+	width: 160px;
+	border: 2px solid black;
+	z-index: 42;
+}
+
+#MenuC.ExtMen li {
+	background-color: orange;
+	z-index: 42;
+}
+
+#MenuC.ExtMen a {
+	background-color: inherit;
+	z-index: 42;
+}
+
+#MenuC.ExtMen ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	z-index: 42;
+}
+
+#MenuC.ExtMen > ul > li {
+	display: none;
+}
+
+#MenuC.ExtMen:hover {
+	background-color: yellow;
+}
+
+#MenuC.ExtMen:hover > ul > li {
+	display: block;
+	width: 80px;
+}
+
+#MenuC.ExtMen > ul.FirstM > li {
+	float: left;
+}
+
+#MenuC.ExtMen ul > li:hover {
+	background: yellow;
+}
+.ExtMen ul.FirstM > li > ul.SecondM {
+	display: none;
+}
+.ExtMen ul.FirstM > li:hover > ul.SecondM {
+	display: inherit;
+}
+
+@media print {
+  .everything #frames > div:nth-child(2) {
+	  display: none;
+  }
+  .everything #frames > div:nth-child(4) {
+	  display: none;
+  }
+	.everything #frames > div:last-child {
+	  display: none;
+  }
+  .everything #frames {
+	  grid-template-columns: 100% 0% 0%;
+  }
+}

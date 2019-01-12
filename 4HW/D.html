@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang = "ru">
+  <head>
+    <meta charset = "utf-8">
+    <title>Найти площадь фигуры</title>
+	<style>
+    .error input{
+      border: 1px solid red;
+    }
+
+    .error i{
+      color: red;
+    }
+    </style>
+	<script>
+	  function getRandomInt(min, max){
+	    return (min + Math.floor(Math.random() * (max - min)));
+	  }
+	  
+	  function getArray(n){
+	    let Arr = [];
+		for (let i = 0; i < n; i++){
+		  Arr[i] = getRandomInt(Math.floor(document.getElementById("in1").value), Math.floor(document.getElementById("in2").value));
+		}
+		return Arr;
+	  }
+	  
+	  function getResultArray(a){
+	    let Temp = 0, Cont = false;
+		do {
+		  Cont = false;
+	      for (let i = 1; i < a.length; i++){
+		    if (a[i - 1] > a[i]){
+		      Temp = a[i - 1], a[i - 1] = a[i], a[i] = Temp;
+			  Cont = true;
+		    }
+		  }
+		}while (Cont);
+		return a;
+	  }
+	  
+	  function BuildTable(){
+	    let res = true;
+		let stuff = document.querySelectorAll("[id^='text']");
+		for (let i = 0; i < stuff.length; i++) {
+		  stuff[i].getElementsByTagName("i")[0].innerHTML = '';
+		  stuff[i].classList.remove("error");
+        }
+		if (!document.getElementById("in0").value || isNaN(document.getElementById("in0").value)){
+		  document.getElementById("text0").classList.add("error");
+		  document.getElementById("err0").innerHTML = ' Введите натуральное число';
+		  res = false;
+		}
+		if (!document.getElementById("in1").value || isNaN(document.getElementById("in1").value)){
+		  document.getElementById("text1").classList.add("error");
+		  document.getElementById("err1").innerHTML = ' Введите целое число';
+		  res = false;
+		}
+		if (!document.getElementById("in2").value || isNaN(document.getElementById("in2").value)){
+		  document.getElementById("text2").classList.add("error");
+		  document.getElementById("err2").innerHTML = ' Введите целое число';
+		  res = false;
+		}
+		if (res && (document.getElementById("in1").value >= document.getElementById("in2").value)){
+		  document.getElementById("text1").classList.add("error");
+		  document.getElementById("text2").classList.add("error");
+		  document.getElementById("err1").innerHTML = ' Минимальное число должно быть меньше максимального';
+		  res = false;
+		}
+		if (res){
+		  let Table = document.getElementById("TC");
+          while (Table.firstChild){
+            Table.removeChild(Table.firstChild);
+          }
+		  let n = Math.floor(document.getElementById("in0").value), Arr = getArray(n * n), ArrNum = 0;
+		  console.log(Arr);
+		  for (let i = 0; i < n; i++){
+		    Row = Table.insertRow();
+			for (let j = 0; j < n; j++){
+			  Cell = Row.insertCell();
+			  Cell.innerHTML = Arr[ArrNum++];
+			}
+		  }
+		}
+	  }
+	  
+	  function SortTable(){
+	    if (document.getElementById("TC").firstChild){
+	      let Arr = [], SortNum = 0;
+	      let stuff = document.querySelectorAll("td"), n = document.getElementsByTagName('tr').length;
+		  for (let i = 0; i < stuff.length; i++){
+		    Arr[i] = parseInt(stuff[i].innerHTML);
+		  }
+		  Arr = getResultArray(Arr);
+		  for (let i = 0; i < n; i++){
+		    for (let j = 0; j < n; j++){
+			  stuff[SortNum].innerHTML = Arr[i * n + j];
+			  (i % 2) ? SortNum -= n : SortNum += n;
+			}
+		    (i % 2) ? SortNum += n : SortNum -= n;
+			SortNum++;
+		  }
+		}
+	  }
+	</script>
+  </head>
+  <body>
+    <form onsubmit="return false">
+      <p><b>Введите параметры таблицы</b></p>
+	  <p id="text0">
+		Размерность таблицы:
+		<input id="in0" type="text" name="res0">
+		<i id="err0"></i>
+	  </p>
+	  <p id="text1">
+		Значения от:
+		<input id="in1" type="text" name="res1">
+		<i id="err1"></i>
+	  </p>
+	  <p id="text2">
+		до:
+		<input id="in2" type="text" name="res2">
+		<i id="err2"></i>
+	  </p>
+	  <input type="button" onclick="BuildTable()" value="Построить таблицу">
+	  <input type="button" onclick="SortTable()" value="Отсортировать">
+	  <table id="TC" border="1" style="margin-top: 15">
+	  </table>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,257 @@
+<html>
+<head>
+  <title>Canvas & Mootools</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mootools/1.6.0/mootools-core.js"></script>
+	<script type="text/javascript">
+		var canvas, ctx, objArr, idTimer, Dir = Math.PI/2;
+		TFig = new Class({
+		  initialize: function(pX,pY) {
+				this.posX = pX;
+				this.posY = pY;
+				this.color = 'rgb('+Math.floor(Math.random()*256)+','
+				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+			},
+			type: 'Fig',
+			posX: 0,
+			posY: 0,
+			color:"rgb(0,0,0)",
+			ToBeDeleted: false,
+			colorFunc: function(ctx, rad){
+			  // формируем градиентную заливку для
+			  with (this){
+			    var gradient = ctx.createRadialGradient(posX+rad/4,
+			    posY-rad/6, rad/8, posX, posY, rad);
+			    gradient.addColorStop(0, '#fff');
+			    gradient.addColorStop(0.85, color);
+			    return gradient;
+			  } 
+			}
+		});
+		TBall = new Class({
+		  Extends: TFig,
+		  initialize: function(pX,pY) {
+			  this.parent(pX,pY);
+			  this.rBall = 5+Math.random()*25;
+		  },
+			type: 'Ball',
+		  rBall: 0,
+		  draw : function(ctx){
+		    // рисуем шарик на canvas
+		    with (this){
+			  ctx.fillStyle = colorFunc(ctx, rBall);
+			  ctx.beginPath();
+			  ctx.arc(posX, posY, rBall, 0, 2*Math.PI, false);
+			  ctx.closePath();
+			  ctx.fill();
+			  }
+		  },
+			getSize: function(){
+			  return this.rBall;
+			},
+			setSize: function(val){
+			  this.rBall = val;
+			}
+		});
+		TSquare = new Class({
+      Extends: TFig,
+      initialize: function(pX,pY) {
+        this.parent(pX,pY);
+        this.side = 10+Math.random()*50;
+      },
+			type: 'Square',
+      side: 0,
+			draw : function(ctx){
+		    with (this){
+			  ctx.fillStyle = colorFunc(ctx, side*0.7071);
+			  ctx.beginPath();
+				ctx.moveTo(posX + side/2, posY + side/2);
+			  ctx.lineTo(posX - side/2, posY + side/2);
+			  ctx.lineTo(posX - side/2, posY - side/2);
+			  ctx.lineTo(posX + side/2, posY - side/2);
+			  ctx.closePath();
+			  ctx.fill();
+			  }
+		  },
+			getSize: function(){
+			  return (this.side/2);
+			},
+			setSize: function(val){
+			  this.side = val*2;
+			}
+    });
+		TDonut = new Class({
+      Extends: TFig,
+      initialize: function(pX,pY) {
+        this.parent(pX,pY);
+        this.innerR = 5 + Math.random()*15;
+				this.outerR = this.innerR + 3 + Math.random()*7;
+      },
+			type: 'Donut',
+      innerR: 0,
+			outerR: 0,
+			draw : function(ctx){
+		    with (this){
+			  ctx.fillStyle = colorFunc(ctx, outerR);
+			  ctx.beginPath();
+				ctx.arc(posX, posY, outerR, 0, 2*Math.PI, false);
+				ctx.arc(posX, posY, innerR, 0, 2*Math.PI, true);
+			  ctx.closePath();
+			  ctx.fill();
+			  }
+		  },
+			getSize: function(){
+			  return (this.outerR);
+			},
+			setSize: function(val){
+			  let temp = this.outerR - this.innerR;
+			  this.outerR = val;
+				this.innerR = val - temp;
+			}
+    });
+		function drawBack(ctx,col1,col2,w,h){
+			// закрашиваем канвас градиентным фоном
+			ctx.save();
+			var g = ctx.createLinearGradient(0,0,0,h);
+			g.addColorStop(1,col1);
+			g.addColorStop(0,col2);
+			ctx.fillStyle = g;
+			ctx.fillRect(0,0,w,h);
+			ctx.restore();
+		}
+		// инициализация работы
+		function init(){
+			canvas = document.getElementById('canvas');
+			if (canvas.getContext){
+				ctx = canvas.getContext('2d');
+				//рисуем фон
+				drawBack(ctx,'#202020','#aaa',canvas.width,canvas.height);
+				//создаем 10 шариков, заноси их в массив и выводим на canvas
+				objArr = [];
+				for (var i = 1; i<=10;i++){
+					var item = new TBall(10+Math.random()*(canvas.width-30),
+					10+Math.random()*(canvas.height-30));
+					item.draw(ctx);
+					objArr.push(item);
+				}
+			}
+		}
+		// создаем новый шарик по щелчку мыши, добавляем его в массив шариков и рисуем его
+		function goInput(event){
+			var x = event.clientX;
+			var y = event.clientY;
+			var item;
+			switch(Math.floor(Math.random()*3)){
+			  case 0:item = new TBall(x,y); break;
+				case 1:item = new TSquare(x,y); break;
+				case 2:item = new TDonut(x,y); break;
+			}
+			item.draw(ctx);
+			objArr.push(item);
+		}
+		function Distance(x1, y1, x2, y2){
+		  return (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)));
+		}
+		function BoxRoundColl(B, R){
+		  if (R.posX < B.posX-B.getSize()){
+			  if (R.posY < B.posY-B.getSize()){
+			    return (Distance(R.posX, R.posY, B.posX-B.getSize(), B.posY-B.getSize()) < R.getSize());
+			  }else if (R.posY > B.posY+B.getSize()){
+			    return (Distance(R.posX, R.posY, B.posX-B.getSize(), B.posY+B.getSize()) < R.getSize());
+			  }else{
+			    return (B.posX-R.posX < B.getSize()+R.getSize());
+			  }
+			}else if (R.posX > B.posX+B.getSize()){
+			  if (R.posY < B.posY-B.getSize()){
+			    return (Distance(R.posX, R.posY, B.posX+B.getSize(), B.posY-B.getSize()) < R.getSize());
+			  }else if (R.posY > B.posY+B.getSize()){
+			    return (Distance(R.posX, R.posY, B.posX+B.getSize(), B.posY+B.getSize()) < R.getSize());
+			  }else{
+			    return (R.posX-B.posX < B.getSize()+R.getSize());
+			  }
+			}else{
+			  if ((R.posY < B.posY-B.getSize())||(R.posY > B.posY+B.getSize())){
+			    return (Math.abs(B.posY-R.posY) < B.getSize()+R.getSize());
+			  }else{
+			    return true;
+			  }
+			}
+		}
+		function CollisionCheck(FO, SO = false){//true = collision found
+		  if (SO){
+		    switch (FO.type){
+			    case 'Ball':
+				    switch (SO.type){
+						  case 'Ball': return ((Distance(FO.posX, FO.posY, SO.posX, SO.posY) < (FO.rBall + SO.rBall)));
+							case 'Square': return BoxRoundColl(SO, FO);
+				      case 'Donut': return ((Distance(FO.posX, FO.posY, SO.posX, SO.posY) < (FO.rBall + SO.outerR)));
+						}
+				  case 'Square':
+					  switch (SO.type){
+						  case 'Ball': return BoxRoundColl(FO, SO);
+							case 'Square': return ((Math.abs(FO.posX-SO.posX) < FO.getSize()+SO.getSize())&&(Math.abs(FO.posY-SO.posY) < FO.getSize()+SO.getSize()));
+				      case 'Donut': return BoxRoundColl(FO, SO);
+						}
+				  case 'Donut':
+					  switch (SO.type){
+						  case 'Ball': return BoxRoundColl(FO, SO);
+							case 'Square': return ((Math.abs(FO.posX-SO.posX) < FO.getSize()+SO.getSize())||(Math.abs(FO.posY-SO.posY) < FO.getSize()+SO.getSize()));
+				      case 'Donut': return BoxRoundColl(FO, SO);
+						}
+			  }
+			}else{
+			  return ((FO.posX+FO.getSize() > canvas.width)||(FO.posX-FO.getSize() < 0)||(FO.posY-FO.getSize() < 0)||(FO.posY + FO.getSize() > canvas.height));
+			}
+		}
+		function moveStuff(){
+			drawBack(ctx,'#202020','#aaa',canvas.width,canvas.height);
+			for (var i = 0; i < objArr.length;i++){
+			    if (Dir == 666){
+				  objArr[i].posX = objArr[i].posX + (Math.random()*8-4);
+				  objArr[i].posY = objArr[i].posY + (Math.random()*8-4);
+				}else{
+				  objArr[i].posX = objArr[i].posX - (Math.cos(Dir)*Math.random()*5) + (Math.random()*2-1);
+				  objArr[i].posY = objArr[i].posY - (Math.sin(Dir)*Math.random()*5) + (Math.random()*2-1);
+				}
+				objArr[i].setSize(objArr[i].getSize() + 1);
+				objArr[i].draw(ctx);
+			}
+			for (var i = 0; i < objArr.length; i++){
+			  for (let j = i; j < objArr.length; j++){
+				  if (j == i){
+					  if (CollisionCheck(objArr[i])){objArr[i].ToBeDeleted = true;}
+					}else if (CollisionCheck(objArr[i], objArr[j])){
+					  objArr[i].ToBeDeleted = true;
+						objArr[j].ToBeDeleted = true;
+					}
+				}
+			}
+			for (var i = 0; i < objArr.length; i){
+			  if (objArr[i].ToBeDeleted || (objArr[i].getSize() > 50)) 
+					objArr.splice(i,1);
+				else 
+					i++;
+			}
+		}
+		function move(){
+			idTimer = setInterval('moveStuff();',50);
+		}
+	</script>
+	<style type="text/css">
+		canvas { border: 1px solid blue; }
+	</style>
+</head>
+<body onload="init();">
+	<canvas id="canvas" width="600" height="400" onclick="goInput(event);">
+	</canvas>
+	<form>
+		<input id="MButt" type = "button" value = "Движение" onclick="move(); document.getElementById('MButt').disabled = true;">
+		<input type = "button" value = "Стоп" onclick="clearInterval(idTimer); document.getElementById('MButt').disabled = false;"><br>
+		<input type="radio" name="direction" value="up" onclick="Dir = Math.PI/2;" checked="true">Вверх<br>
+		<input type="radio" name="direction" value="down" onclick="Dir = Math.PI*1.5;">Вниз<br>
+		<input type="radio" name="direction" value="left" onclick="Dir = Math.PI;">Влево<br>
+		<input type="radio" name="direction" value="right" onclick="Dir = 0;">Вправо<br>
+		<input type="radio" name="direction" value="rand" onclick="Dir = (Math.random()*2*Math.PI);">Случайное н<br>
+		<input type="radio" name="direction" value="chaos" onclick="Dir = 666;">Хаотическое н<br>
+	</form>
+</body>
+</html>
