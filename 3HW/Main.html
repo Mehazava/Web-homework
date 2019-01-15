@@ -10,6 +10,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		<script>
+		  $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      });
+		</script>
   </head>
 	<body>
 	  <div class="container-fluid">
@@ -39,10 +44,13 @@
 							</ul>
 						</div>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#BreCol" role="button" aria-expanded="false" aria-controls="collapseExample"><span class="glyphicon glyphicon-sort"></span> Navigation  </a>
+					</li>
 				</ul>
 			</nav>
-			<ol class="breadcrumb">
-        <li><a href="Main.html"> Главная </a></li>
+			<ol class="breadcrumb collapse" id="BreCol">
+        <li><a href="Main.html"> Main </a></li>
 			</ol>
 			
 			<div class="row">
@@ -51,29 +59,41 @@
 						<li class="media">
 							<img class="mr-3" src="res/done.png" width="100px">
 							<div class="media-body">
-								<h5 class="mt-0">Completed</h5>
-								Files that are already finished.
-								<div class="media mt-3">
+								<h5 class="mt-0">Completed <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top" title="Three">3</span></h5>
+								Files that are already finished.<br>
+								<svg height="30" width="200" xmlns:xlink="Completed.html">
+								  <path d="M 0 0 h 143 q 20 10 0 20 h -143 z" stroke="brown" stroke-width="3" fill="yellow" />
+									<a xlink:href="Completed.html" target="_blank">
+										<text x="2" y="15" fill="red">Completed files page -></text>
+									</a>
+								</svg>
+								<!--<div class="media mt-3">
 									<img class="mr-3" src="banner2.jpg">
 									<div class="media-body">
 										<h5 class="mt-0">Media heading2</h5>
 										asdafsas
 									</div>
-								</div>
+								</div>-->
 							</div>
 						</li>
 						<li class="media">
 							<img class="mr-3" src="res/notdone.jpg" width="100px">
 							<div class="media-body">
-								<h5 class="mt-0">Not Completed</h5>
-								Files that are yet to be finished.
-								<div class="media mt-3">
+								<h5 class="mt-0">Not Completed <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top" title="Two">2</span></h5>
+								Files that are yet to be finished.<br>
+								<svg height="30" width="200" xmlns:xlink="Completed.html">
+								  <path d="M 0 0 h 100 q 20 10 0 20 h -100 z" stroke="brown" stroke-width="3" fill="yellow" />
+									<a xlink:href="Completed.html" target="_blank">
+										<text x="2" y="15" fill="red">NYI files page -></text>
+									</a>
+								</svg>
+								<!--<div class="media mt-3">
 									<img class="mr-3" src="banner2.jpg">
 									<div class="media-body">
 										<h5 class="mt-0">Media heading2</h5>
 										asdafsas
 									</div>
-								</div>
+								</div>-->
 							</div>
 						</li>
 					</ul>
