@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Calculator v0.1</title>
+		<style>
+			body {
+			  background-color: cyan;
+				text-align: center;
+			}
+		  .CalcMain {
+        display: grid;
+				width: 400px;
+				grid-template-columns: 80px 80px 80px 80px 80px;
+				grid-template-rows: 100px 60px 60px 60px 60px 60px 60px;
+				border: 5px solid gray;
+				border-top-left-radius: 15px;
+				border-top-right-radius: 15px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+      }
+			.CalcDisp {
+			  display: grid;
+				grid-template-rows: 40px 60px;
+				grid-template-columns: 200px 200px;
+			  grid-area: 1 / 1 / 2 / 6;
+				background-color: black;
+				border-top-left-radius: 10px;
+				border-top-right-radius: 10px;
+			}
+			.Erro {
+			  color: red;
+				text-align: left;
+				font-size: 13px;
+				padding: 6px;
+				padding-top: 14px;
+			}
+			.Hist {
+			  color: gray;
+				text-align: right;
+				font-size: 13px;
+				padding: 6px;
+				padding-top: 14px;
+			}
+			.CurrNumb {
+			  grid-area: 2 / 1 / 3 / 3;
+				padding: 10px;
+				color: white;
+				font-size: 34px;
+				text-align: right;
+			}
+			.CalcButt {
+			  font-size: 30px;
+			}
+			.Equa {
+			  grid-area: 5 / 5 / 7 / 6;
+			}
+			.Zero {
+			  grid-area: 6 / 1 / 7 / 3;
+			}
+			.Numb {
+			}
+		</style>
+		<script>
+			var FirstNum = 0, SecondNum = 0, PrevOp = 'none', PrevAc = 'none', CurrNum, Erro, Hist, Rad = true, Scan, OpT = 0;
+			
+			function init() {
+				CurrNumb = document.querySelector('.CurrNumb');
+				Erro = document.querySelector('.Erro');
+				Hist = document.querySelector('.Hist');
+			}
+		  function Num(X) {
+			  Erro.innerText = '';
+				if (PrevAc == 'calc') {
+					ClearHist();
+				}
+				if (CurrNumb.innerHTML == '0') {
+					CurrNumb.innerText = X;
+				} else {
+					CurrNumb.innerText += X;
+				}
+				PrevAc = 'num';
+			}
+			function Operate1(X) {
+			  Erro.innerText = '';
+			  CalcPrev();
+				if ((PrevAc == 'num') || (PrevAc == 'calc')){
+				  FirstNum = parseFloat(CurrNumb.innerText);
+					CurrNumb.innerText = '0';
+				}
+				PrevOp = X;
+				OpT = 1;
+				PrevAc = 'op1';
+				switch (X){
+				case '1/x': Hist.innerText = '1/' + FirstNum + ' '; break;
+				case 'Cos':
+				case 'Sin':
+				case 'Tg':
+				case 'Ctg': 
+					Hist.innerText = X + '(' + FirstNum + ') ';
+				break;
+				}
+			}
+			function Operate2(X) {
+			  Erro.innerText = '';
+				CalcPrev();
+				if ((PrevAc == 'num') || (PrevAc == 'calc')){
+				  FirstNum = parseFloat(CurrNumb.innerText);
+					CurrNumb.innerText = '0';
+				}
+				PrevOp = X;
+				Hist.innerText = FirstNum + ' ' + X + ' ';
+				PrevAc = 'op';
+				OpT = 2;
+			}
+			function Custom(X) {
+			  Erro.innerText = '';
+			  switch (X){
+				case ',': if (!(CurrNumb.innerText.includes('.'))){
+					CurrNumb.innerText += '.';
+					PrevAc = 'num';
+				} break;
+				case 'BS': if (CurrNumb.innerText.length > 1){
+				  CurrNumb.innerText = CurrNumb.innerText.substr(0, CurrNumb.innerText.length-1);
+				}else{
+					CurrNumb.innerText = '0';
+				} break;
+				case 'CE': CurrNumb.innerText = '0'; break;
+				case 'C': ClearHist(); break;
+				case '+-': if (CurrNumb.innerText.includes('-')){
+				  CurrNumb.innerText = CurrNumb.innerText.substr(1, CurrNumb.innerText.length-1);
+				}else{
+				  if (CurrNumb.innerText != '0'){CurrNumb.innerText = '-' + CurrNumb.innerText;}
+				}break;
+				case 'Rad': Rad = !(Rad); break;
+				}
+			}
+			function Calculate(Scan) {// == true if failed
+			  Erro.innerText = '';
+				if (PrevAc == 'op1'){
+				  switch (PrevOp){
+					case '1/x':
+						if (FirstNum) {
+							Erro.innerText = 'div by 0';
+							return true;
+						}else{
+							CurrNumb.innerText = 1 / FirstNum;
+							PrevAc = 'calc';
+						}break;
+					case 'Cos': CurrNumb.innerText = Math.cos(FirstNum); PrevAc = 'calc'; break;
+					case 'Sin': CurrNumb.innerText = Math.sin(FirstNum); PrevAc = 'calc'; break;
+					case 'Tg':
+						if (Math.cos(FirstNum) == 0){
+							Erro.innerText = 'div by 0';
+							return true;
+						}else{
+							CurrNumb.innerText = Math.tg(FirstNum);
+							PrevAc = 'calc';
+						}break;
+					case 'Ctg':
+						if (Math.sin(FirstNum) == 0){
+							Erro.innerText = 'div by 0';
+							return true;
+						}else{
+							CurrNumb.innerText = Math.ctg(FirstNum);
+							PrevAc = 'calc';
+						}break;
+					}
+				}else if ((PrevOp != 'none') && ((PrevAc == 'num') || (PrevAc == 'calc'))) {
+				  if (PrevAc == 'calc'){
+					  FirstNum = parseFloat(CurrNumb.innerText);
+					}else{
+						SecondNum = parseFloat(CurrNumb.innerText);
+					}
+					Hist.innerText = FirstNum + ' ' + PrevOp + ' ' + SecondNum;
+					switch (PrevOp){
+					case 'Root':
+						if (FirstNum <= 0){
+							Erro.innerText = 'First arg must be > 0';
+							return true;
+						}else if(SecondNum <= 0){
+							Erro.innerText = 'First arg must be > 0';
+							return true;
+						}else{
+							CurrNumb.innerText = Math.pow(FirstNum, 1/SecondNum);
+							PrevAc = 'calc';
+						}
+					break;
+					case '/':
+					  if(SecondNum == 0){
+							Erro.innerText = 'div by 0';
+							return true;
+						}else{
+							CurrNumb.innerText = FirstNum / SecondNum;
+							PrevAc = 'calc';
+						}
+					break;
+					case '%':
+					  if(SecondNum == 0){
+							Erro.innerText = 'div by 0';
+							return true;
+						}else{
+							CurrNumb.innerText = FirstNum % SecondNum;
+							PrevAc = 'calc';
+						}
+					break;
+					case '*':
+						CurrNumb.innerText = FirstNum * SecondNum;
+						PrevAc = 'calc';
+					break; 
+					case '-':
+						CurrNumb.innerText = FirstNum - SecondNum;
+						PrevAc = 'calc';
+					break; 
+					case '+':
+						CurrNumb.innerText = FirstNum + SecondNum;
+						PrevAc = 'calc';
+					break;
+					}
+				}else{
+				  Erro.innerText = 'Enter arguments and action';
+					return true;
+				}
+				return false;
+			}
+			function ClearHist() {
+				PrevOp = 'none';
+				PrevAc = 'none';
+				Erro.innerText = '';
+				Hist.innerText = '';
+				FirstNum = 0;
+				SecondNum = 0;
+				CurrNumb.innerText = '0';
+				OpT = 0;
+			}
+			function CalcPrev(){
+			  if (OpT == 2) {//if input is (Num Op *)
+					if (PrevAc == 'num') {//if input is (Num Op Num) then try ->(Calc)
+						if (Calculate(true)) {
+							return;
+						}
+						
+					}
+				} else if (OpT == 1) {
+				  if (Calculate(true)) {
+						return;
+					}
+				}
+			}
+		</script>
+	</head>
+  <body onload="init();">
+		<div class="CalcMain">
+		  <div class="CalcDisp">
+			  <div class="Erro"></div>
+			  <div class="Hist"></div>
+				<div class="CurrNumb">0</div>
+			</div>
+			
+			<button class="CalcButt" onclick="Custom('BS');">BS</button>
+			<button class="CalcButt" onclick="Custom('CE');">CE</button>
+			<button class="CalcButt" onclick="Custom('C');">C</button>
+			<button class="CalcButt" onclick="Custom('+-');">+\-</button>
+			<button class="CalcButt" onclick="Operate2('Root');">Root</button>
+			
+			<button class="CalcButt Numb" onclick="Num(7);">7</button>
+			<button class="CalcButt Numb" onclick="Num(8);">8</button>
+			<button class="CalcButt Numb" onclick="Num(9);">9</button>
+			<button class="CalcButt" onclick="Operate2('/');">/</button>
+			<button class="CalcButt" onclick="Operate2('%');">%</button>
+			
+			<button class="CalcButt Numb" onclick="Num(4);">4</button>
+			<button class="CalcButt Numb" onclick="Num(5);">5</button>
+			<button class="CalcButt Numb" onclick="Num(6);">6</button>
+			<button class="CalcButt" onclick="Operate2('*');">*</button>
+			<button class="CalcButt" onclick="Operate1('1/x');">1/x</button>
+			
+			<button class="CalcButt Numb" onclick="Num(1);">1</button>
+			<button class="CalcButt Numb" onclick="Num(2);">2</button>
+			<button class="CalcButt Numb" onclick="Num(3);">3</button>
+			<button class="CalcButt" onclick="Operate2('-');">-</button>
+			<button class="CalcButt Equa" onclick="Calculate(true);">=</button>
+			
+			<button class="CalcButt Zero Numb" onclick="Num(0);">0</button>
+			<button class="CalcButt" onclick="Custom(',');">,</button>
+			<button class="CalcButt" onclick="Operate2('+');">+</button>
+			
+			<button class="CalcButt" onclick="Operate1('Cos');">Cos</button>
+			<button class="CalcButt" onclick="Operate1('Sin');">Sin</button>
+			<button class="CalcButt" onclick="Operate1('Tg');">Tg</button>
+			<button class="CalcButt" onclick="Operate1('Ctg');">Ctg</button>
+			<button class="CalcButt" onclick="Custom('Rad');">Rad</button>
+		</div>
+	</body>
+</html>

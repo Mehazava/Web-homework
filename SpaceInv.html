@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Space Invaders v0.1</title>
+		<script>
+		TEnemy = new Class({
+		    initialize: function(pX,pY) {
+				this.posX = pX;
+				this.posY = pY;
+				this.color = 'rgb('+Math.floor(Math.random()*256)+','
+				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+			},
+			type: 'Fig',
+			posX: 0,
+			posY: 0,
+			speedX: 0,
+			speedY: 0,
+			size: 0,
+			color:"rgb(0,0,0)"
+		});
+		
+		TEProjectile = new Class({
+		    initialize: function(pX,pY) {
+				this.posX = pX;
+				this.posY = pY;
+				this.lives = 1;
+				this.color = 'rgb('+Math.floor(Math.random()*256)+','
+				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+			},
+			type: 'Dumb',
+			lives: 0,
+			posX: 0,
+			posY: 0,
+			speedY: 0,
+			damage: true,
+			color:"rgb(0,0,0)"
+		});
+		
+		TPlayer = new Class({
+			Extends: TFig,
+		    initialize: function() {
+				this.lives = 3;
+				this.score = 0;
+				this.posX = ;
+				this.posY = ;
+				this.color = 'rgb('+Math.floor(Math.random()*256)+','
+				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+			},
+			score: 0,
+			cooldown: 0,
+			shoot: function(){
+				
+			}
+		});
+		
+		var GameSpeed = 1, Enemies, Player, Projectiles, canvas, ctx, idTimer, PlayerMove, EnemyWidth;
+		
+		function init(){
+			canvas = document.getElementById('canvas');
+			if (canvas.getContext){
+				ctx = canvas.getContext('2d');
+				drawBack(ctx,'#202020','#aaa',canvas.width,canvas.height);
+				Player = new TPlayer(x,y);
+				idTimer = setInterval('ProcessFrame(); Vizualize();', 50);
+			}
+		}
+		
+		function SpawnWave(){
+		    GameSpeed += 0.2;
+		}
+		
+		function ProcessFrame(){
+			if !(Player.lives){}
+			if !(Enemies){SpawnWave();}
+			switch(PlayerMove){
+			case 0: if(Player.posX > 0){Player.posX -= 1*GameSpeed;} break;//left
+			case 1: if(Player.posX < 400){Player.posX += 1*GameSpeed;} break;//right
+			case 2: if(!Player.cooldown){Player.shoot();} break;//shoot
+			}
+			if(Player.cooldown > 0){Player.cooldown = (Player.cooldown > GameSpeed)? (Player.cooldown - GameSpeed) : 0;}
+			for (let i = 0; i < Enemies.length; i++){
+				
+			}
+			for (let i = 0; i < Projectiles.length; i++){
+				
+			}
+		}
+		
+		function Visualize(){
+			
+		}
+		</script>
+	</head>
+    <body onload="init();">
+		<canvas id="canvas" width="600" height="400">
+		</canvas>
+	</body>
+</html>
