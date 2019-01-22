@@ -103,6 +103,7 @@
 					Hist.innerText = X + '(' + FirstNum + ') ';
 				break;
 				}
+				Calculate(true);
 			}
 			function Operate2(X) {
 			  Erro.innerText = '';
@@ -135,7 +136,14 @@
 				}else{
 				  if (CurrNumb.innerText != '0'){CurrNumb.innerText = '-' + CurrNumb.innerText;}
 				}break;
-				case 'Rad': Rad = !(Rad); break;
+				case 'Rad':
+					Rad = !(Rad);
+					if (Rad){
+						document.querySelector('.CalcMain > button:last-child').innerText = 'Rad';
+					}else{
+						document.querySelector('.CalcMain > button:last-child').innerText = 'Deg';
+					}
+				break;
 				}
 			}
 			function Calculate(Scan) {// == true if failed
@@ -150,22 +158,22 @@
 							CurrNumb.innerText = 1 / FirstNum;
 							PrevAc = 'calc';
 						}break;
-					case 'Cos': CurrNumb.innerText = Math.cos(FirstNum); PrevAc = 'calc'; break;
-					case 'Sin': CurrNumb.innerText = Math.sin(FirstNum); PrevAc = 'calc'; break;
+					case 'Cos': CurrNumb.innerText = Math.cos(Rad ? FirstNum : (FirstNum * Math.PI / 180)); PrevAc = 'calc'; break;
+					case 'Sin': CurrNumb.innerText = Math.sin(Rad ? FirstNum : (FirstNum * Math.PI / 180)); PrevAc = 'calc'; break;
 					case 'Tg':
-						if (Math.cos(FirstNum) == 0){
+						if (Math.cos(Rad ? FirstNum : (FirstNum * Math.PI / 180)) == 0){
 							Erro.innerText = 'div by 0';
 							return true;
 						}else{
-							CurrNumb.innerText = Math.tg(FirstNum);
+							CurrNumb.innerText = Math.sin(Rad ? FirstNum : (FirstNum * Math.PI / 180)) / Math.cos(Rad ? FirstNum : (FirstNum * Math.PI / 180));
 							PrevAc = 'calc';
 						}break;
 					case 'Ctg':
-						if (Math.sin(FirstNum) == 0){
+						if (Math.sin(Rad ? FirstNum : (FirstNum * Math.PI / 180)) == 0){
 							Erro.innerText = 'div by 0';
 							return true;
 						}else{
-							CurrNumb.innerText = Math.ctg(FirstNum);
+							CurrNumb.innerText = Math.cos(Rad ? FirstNum : (FirstNum * Math.PI / 180)) / Math.sin(Rad ? FirstNum : (FirstNum * Math.PI / 180));
 							PrevAc = 'calc';
 						}break;
 					}

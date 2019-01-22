@@ -3,97 +3,328 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Space Invaders v0.1</title>
+		<style>
+		img {
+			display: none;
+		}
+		#BE {
+		  background-color: gray;
+		}
+		#canvas {
+			background-color: black;
+      position: absolute;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%);
+			border: 2px solid lime;
+		}
+		</style>
+		<script type="text/javascript" src="MooTools-Core-1.6.0.js"></script>
 		<script>
+		var GameSpeed, Enemies, Player, PProj, EProj, canvas, ctx, TimerRefresh, PlayerMove, EnemyWidth,
+			PlayerWidth, PlayerHeight, IsShooting, Keys, W, H, IPl, IE1, WaveX, WaveY, WaveRight, WaveWidth,
+			MovStage, MovDelay, DangerZone, HiScore = '0', WaveNum;
+		
 		TEnemy = new Class({
-		    initialize: function(pX,pY) {
+		  initialize: function(pX,pY) {
 				this.posX = pX;
 				this.posY = pY;
-				this.color = 'rgb('+Math.floor(Math.random()*256)+','
-				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+				this.speedX = 5;
+				this.speedY = 25;
 			},
-			type: 'Fig',
+			type: 'Dumb',
 			posX: 0,
 			posY: 0,
 			speedX: 0,
 			speedY: 0,
-			size: 0,
-			color:"rgb(0,0,0)"
+			shoot: function(){
+			  EProj.push(new TProjectile(this.posX + (EnemyWidth / 2), this.posY, 6));
+			}
 		});
 		
-		TEProjectile = new Class({
-		    initialize: function(pX,pY) {
+		TProjectile = new Class({
+		    initialize: function(pX, pY, sY) {
 				this.posX = pX;
 				this.posY = pY;
-				this.lives = 1;
+				this.speedY = sY;
 				this.color = 'rgb('+Math.floor(Math.random()*256)+','
 				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
 			},
-			type: 'Dumb',
-			lives: 0,
 			posX: 0,
 			posY: 0,
 			speedY: 0,
 			damage: true,
-			color:"rgb(0,0,0)"
+			color:"#ffffff"
 		});
 		
 		TPlayer = new Class({
-			Extends: TFig,
-		    initialize: function() {
+			Extends: TEnemy,
+		  initialize: function() {
 				this.lives = 3;
 				this.score = 0;
-				this.posX = ;
-				this.posY = ;
-				this.color = 'rgb('+Math.floor(Math.random()*256)+','
-				+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';
+				this.posX = W / 2 - (PlayerWidth / 2);
+				this.posY = H - 20 - PlayerHeight;
 			},
 			score: 0,
 			cooldown: 0,
 			shoot: function(){
-				
+			  PProj.push(new TProjectile(this.posX + (PlayerWidth / 2), this.posY, -6));
+				this.cooldown = 50;
 			}
 		});
 		
-		var GameSpeed = 1, Enemies, Player, Projectiles, canvas, ctx, idTimer, PlayerMove, EnemyWidth;
 		
 		function init(){
+			window.onkeydown = null;
 			canvas = document.getElementById('canvas');
 			if (canvas.getContext){
 				ctx = canvas.getContext('2d');
-				drawBack(ctx,'#202020','#aaa',canvas.width,canvas.height);
-				Player = new TPlayer(x,y);
-				idTimer = setInterval('ProcessFrame(); Vizualize();', 50);
+				GameSpeed = 40;
+				Keys = {};
+				PProj = [];
+				EProj = [];
+				Enemies = [];
+				PlayerMove = 0;
+				EnemyWidth = 20;
+				PlayerWidth = 30;
+				PlayerHeight = 10;//+5 on top outside hitbox
+				W = 600;
+				H = 600;
+				WaveNum = 0;
+				IE1 = document.getElementById('E1');
+				IPl = document.getElementById('Pl');
+				IsShooting = false;
+				window.onkeydown = function (x) {Keys[x.keyCode] = true;}
+				window.onkeyup = function (x) {Keys[x.keyCode] = false;}
+				Player = new TPlayer();
+				DangerZone = Player.posY - 15;
+				let Coooookies = document.cookie;//decodeURIComponent(document.cookie);
+				//Coooookies = Coooookies.split(';');
+				console.log(document.cookie);
+				//if (Coooookies[0] != ''){HiScore = Coooookies[0].substring(9);}
+				
+				TimerRefresh = setInterval('Process(); Visualize();', GameSpeed);
 			}
+		}
+		
+		function KeyCheck(){
+			if (Keys[37]){
+				if (Keys[39]){
+					PlayerMove = 0;
+				}else{
+					PlayerMove = 1;
+				}
+			}else if (Keys[39]){
+				PlayerMove = 2;
+			}else{
+			  PlayerMove = 0;
+			}
+			IsShooting = Keys[38];
 		}
 		
 		function SpawnWave(){
-		    GameSpeed += 0.2;
+			console.log('ohno');
+			WaveNum++;
+		  GameSpeed = 40 - (WaveNum * 5);
+			if (GameSpeed < 10){GameSpeed = 8};
+			clearInterval(TimerRefresh);
+			TimerRefresh = setInterval('Process(); Visualize();', GameSpeed);
+			WaveX = 10;
+			WaveY = 25;
+			WaveRight = 1;
+			WaveWidth = 11 * 5 + 12 * EnemyWidth;
+			MovStage = 0;
+			for (let i = 0; i < 12; i++){
+				for (let j = 0; j < 4; j++){
+					Enemies.push(new TEnemy(WaveX + ((EnemyWidth + 5) * i), WaveY + ((EnemyWidth + 5) * j)));
+				}
+			}
 		}
 		
-		function ProcessFrame(){
-			if !(Player.lives){}
-			if !(Enemies){SpawnWave();}
+		function EndGame(){
+			ctx.strokeStyle = '#ffffff';
+			ctx.fillStyle = '#990000';
+			ctx.font = "30px Georgia";
+			ctx.fillText('You ded', (W / 2), (H / 2));
+			if (Player.score > parseFloat(HiScore)){
+				ctx.fillText("But you've set a new high score!", (W / 2), (H / 2) + 30);
+				let username = prompt("Please enter your name: ", "");
+				HiScore = Player.score + ' ' + username;
+				let datec = new Date();
+				datec.setTime(datec.getTime() + (365 * 24 * 3600000));
+				let newcookie = 'HiScore=' + HiScore + '; expires=' + datec.toUTCString() + ';path= / ';
+				console.log(newcookie);
+				document.cookie = newcookie;
+				console.log(document.cookie);
+			}
+			ctx.fillText("Press any key to start again", (W / 2), (H / 2) + 60);
+			window.onkeydown = function () {init();}
+			clearInterval(TimerRefresh);
+			console.log('oppa');
+			
+		}
+		
+		function Process(){
+			if (Player.lives < 1){
+				EndGame();
+				return;
+			}
+			if (Enemies.length == 0){
+				SpawnWave();
+				return;
+			}
+			//Player----------------------
+			KeyCheck();
 			switch(PlayerMove){
-			case 0: if(Player.posX > 0){Player.posX -= 1*GameSpeed;} break;//left
-			case 1: if(Player.posX < 400){Player.posX += 1*GameSpeed;} break;//right
-			case 2: if(!Player.cooldown){Player.shoot();} break;//shoot
+			case 1: if(Player.posX > 4){Player.posX -= 2;} break;//left
+			case 2: if(Player.posX < (W - 4 - PlayerWidth)){Player.posX += 2;} break;//right
 			}
-			if(Player.cooldown > 0){Player.cooldown = (Player.cooldown > GameSpeed)? (Player.cooldown - GameSpeed) : 0;}
+			if(!(Player.cooldown) && IsShooting){Player.shoot();}//shoot
+			if(Player.cooldown > 0){Player.cooldown--;}
+			//Enemies---------------------
+			////  set speed
+			if (WaveY > 400){
+				MovDelay = 1;
+			}else if (WaveY > 200){
+				MovDelay = 2;
+			}else{
+				MovDelay = 3;
+			}
+			MovStage++;
+			if (MovStage > MovDelay){
+				MovStage = 0;
+				WaveX += (Enemies[0].speedX * WaveRight);
+				for (let i = 0; i < Enemies.length; i++){
+					Enemies[i].posX += (Enemies[i].speedX * WaveRight);
+				}
+			////  wave advancement
+				if (WaveX < 10){
+					WaveRight = 1;
+					WaveY += Enemies[0].speedY;
+					for (let i = 0; i < Enemies.length; ){
+						Enemies[i].posY += (Enemies[i].speedY);
+						if (Enemies[i].posY > DangerZone){
+							Player.lives--;
+							Enemies.splice(i,1);
+						}else{
+							i++;
+						}
+					}
+				}else if (WaveX > W - 10 - WaveWidth){
+					WaveRight = -1;
+					WaveY += Enemies[0].speedY;
+					for (let i = 0; i < Enemies.length; ){
+						Enemies[i].posY += (Enemies[i].speedY);
+						if (Enemies[i].posY > DangerZone){
+							Player.lives--;
+							Enemies.splice(i,1);
+						}else{
+							i++;
+						}
+					}
+				}
+			}
+			//PlayerProjectiles-----------------
+			////  movement
+			for (let i = 0; i < PProj.length; ){
+				PProj[i].posY += PProj[i].speedY;
+				if (PProj[i].posY < 0){
+					PProj.splice(i,1);
+				}else{
+					i++;
+				}
+			}
+			////  collision
+			for (let i = 0; i < PProj.length; ){
+				let Del = false;
+				for (let j = 0; j < Enemies.length; ){
+				  if ((Enemies[j].posX <= PProj[i].posX) && (Enemies[j].posY - 5 <= PProj[i].posY) && (Enemies[j].posX + EnemyWidth >= PProj[i].posX) && (Enemies[j].posY + EnemyWidth - 5 >= PProj[i].posY)){
+						Del = true;
+					}
+					if (Del){
+						Enemies.splice(j,1);
+						Player.score += 10;
+						break;
+					}else{
+						j++;
+					}
+				}
+				if (Del){
+					PProj.splice(i,1);
+				}else{
+					i++;
+				}
+			}
+			//EnemyProjectiles-----------------
+			////  spawn enemy projectiles
 			for (let i = 0; i < Enemies.length; i++){
-				
+				if (Math.floor(Math.random() * 100 * MovDelay) == 1){
+					Enemies[i].shoot();
+				}
 			}
-			for (let i = 0; i < Projectiles.length; i++){
-				
+			////  movement
+			for (let i = 0; i < EProj.length; ){
+				EProj[i].posY += EProj[i].speedY;
+				if (EProj[i].posY > H){
+					EProj.splice(i,1);
+				}else{
+					i++;
+				}
+			}
+			////  collision
+			for (let i = 0; i < EProj.length; ){
+				if ((Player.posX <= EProj[i].posX) && (Player.posY + 5 <= EProj[i].posY) && (Player.posX + PlayerWidth >= EProj[i].posX) && (Player.posY + PlayerHeight + 5 >= EProj[i].posY)){
+					EProj.splice(i,1);
+					Player.lives--;
+				}else{
+					i++;
+				}
 			}
 		}
 		
 		function Visualize(){
+		  ctx.clearRect(0, 0, W, H);
+			ctx.drawImage(IPl, Player.posX, Player.posY);
+			ctx.beginPath();
+			ctx.strokeStyle = '#990000';
+			ctx.lineWidth = 1;
+			ctx.moveTo(0, DangerZone);
+			ctx.lineTo(W, DangerZone);
+			ctx.stroke();
+			ctx.strokeStyle = '#ffffff';
+			ctx.fillStyle = '#ffffff';
+			ctx.font = "20px Georgia";
+			ctx.fillText('Lives: ' + Player.lives, 5, 15);
+			ctx.fillText('Wave: ' + WaveNum, 100, 15);
+			ctx.fillText('Score: ' + Player.score, 200, 15);
+			ctx.fillText('HiScore: ' + HiScore, 350, 15);
 			
+			for (let i = 0; i < Enemies.length; i++){
+				ctx.drawImage(IE1, Enemies[i].posX, Enemies[i].posY);
+			}
+			for (let i = 0; i < PProj.length; i++){
+				ctx.beginPath();
+			  ctx.strokeStyle = PProj[i].color;
+				ctx.lineWidth = 2;
+				ctx.moveTo(PProj[i].posX, PProj[i].posY);
+				ctx.lineTo(PProj[i].posX, PProj[i].posY + 8);
+				ctx.stroke();
+			}
+			for (let i = 0; i < EProj.length; i++){
+				ctx.beginPath();
+			  ctx.strokeStyle = '#ffffff';
+				ctx.lineWidth = 3;
+				ctx.moveTo(EProj[i].posX, EProj[i].posY);
+				ctx.lineTo(EProj[i].posX, EProj[i].posY + 5);
+				ctx.stroke();
+			}
 		}
 		</script>
 	</head>
-    <body onload="init();">
-		<canvas id="canvas" width="600" height="400">
+    <body onload="init();" id='BE'>
+		<img src="Player.png" id="Pl" width="30" height="15">
+		<img src="Enemy1.png" id="E1" width="20" height="20">
+		<canvas id="canvas" width="600" height="600">
 		</canvas>
 	</body>
 </html>

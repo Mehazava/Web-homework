@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Space Invaders v0.1</title>
+		<style>
+		img {
+			display: none;
+		}
+		#BE {
+		  background-color: gray;
+		}
+		#canvas {
+			background-color: black;
+      position: absolute;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%);
+			border: 2px solid lime;
+		}
+		</style>
+		<script type="text/javascript" src="MooTools-Core-1.6.0.js"></script>
+		<script>
+		var GameSpeed, Enemies, Player, PProj, EProj, canvas, ctx, TimerRefresh, PlayerMove, EnemyWidth,
+			PlayerWidth, PlayerHeight, IsShooting, Keys, W, H, IPl, IE1, WaveX, WaveY, WaveRight, WaveWidth,
+			MovStage, MovDelay, DangerZone, HiScore = '0', WaveNum;
+			
+		function init(){
+				let datec = new Date();
+				datec.setTime(datec.getTime() + (365 * 24 * 3600000));
+				let newcookie = 'HiScore=180 lol; expires=' + datec.toUTCString() + ';path= / ';
+				console.log(newcookie);
+				document.cookie = newcookie;
+				console.log(document.cookie);
+		
+		}
+		
+		</script>
+	</head>
+    <body onload="init();" id='BE'>
+		<img src="Player.png" id="Pl" width="30" height="15">
+		<img src="Enemy1.png" id="E1" width="20" height="20">
+		<canvas id="canvas" width="600" height="600">
+		</canvas>
+	</body>
+</html>
